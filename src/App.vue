@@ -1,10 +1,20 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <NavBar/>
+  <div class="container">
+    <router-view/>
+  </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import NavBar from '@/components/NavBar.vue';
+
+export default defineComponent({
+  components:{
+    NavBar
+  }
+})
+</script>
 
 <style>
 #app {
