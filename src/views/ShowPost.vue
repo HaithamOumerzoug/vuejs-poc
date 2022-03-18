@@ -14,46 +14,30 @@
     
 </template>
 <script lang="ts">
-import { defineComponent, Ref, ref, onMounted , watch } from 'vue';
+import { defineComponent, Ref, ref, onMounted , watch, computed } from 'vue';
 
 import Post from '@/types/models/post';
 import { useStore } from 'vuex';
 
 export default defineComponent({
-    props:['id','show'],
+    props:['id'],
     setup(props){
         let store = useStore();
 
-        let onePost: Ref<Post> | any = ref();
         let err: any = ref(null);
-        let loading: Ref<boolean> = ref(false);
+        
         onMounted(()=>{
-            loading.value=true;
-            loadPost(); 
+            store.dispatch('post/getOnePost',{id: props.id}).catch(err=>err.value = err)
         });
 
-        const loadPost = async ()=>{
-            store.dispatch('post/getOnePost',{id: props.id});
-
-            setTimeout(()=>{
-                onePost.value = store.getters['post/getOnePost'];
-            },2000);
-            console.log(onePost);
+        const onePost = computed(()=>{
+            return store.getters['post/getOnePost'];
             
-        }
-
-        watch(err , ()=>{
-            if(err.value){
-                setTimeout(()=>{
-                    err.value=null;
-                },2000)
-            }
-        })
+        });
 
         return {
             onePost,
-            err,
-            loading
+            err
         }
 
     }

@@ -7,14 +7,11 @@
             >Add post</button>
         </div>
         <div v-else>
-            <AddPost
-                @createPost = "createOnePost($event)"
-                @show = "showForm"
-            />
+            <AddPost/>
         </div>
     </div>
-    <div v-if="all_posts.length>0" class="row">
-        <div v-for="post in all_posts" class="col-md-8 offset-2">
+    <div v-if="posts.length>0" class="row">
+        <div v-for="post in posts" class="col-md-8 offset-2">
             <PostComponent 
                 :post="post" 
                 @deletePost="deleteOnePost($event)"
@@ -27,11 +24,10 @@
     <router-view></router-view>
 </template>
 <script lang="ts">
-import { defineComponent, Ref } from 'vue';
-import Post from '@/types/models/post';
+import { computed, defineComponent } from 'vue';
 import  PostComponent from '@/components/Post.vue';
 import  AddPost from '@/components/AddPost.vue';
-import { ref , onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 export default defineComponent({
@@ -40,37 +36,31 @@ export default defineComponent({
         AddPost
     },
     setup(){
-        let isShow: Ref<boolean> = ref(false);
-        let all_posts: Ref<Post[]> = ref([]);
-
         let store = useStore();
 
+
         onMounted(()=>{
-            getPosts();
-        })
-        const getPosts = async ()=>{
             store.dispatch('post/getAllPost');
-            // all_posts.value = store.getters['post/getPosts'];
-            setTimeout(()=>{
-                all_posts.value = store.getters['post/getPosts'];
-            },2000)
-            // console.log(store.getters['post/getPosts']);
-        };
-        const createOnePost = async (post:Post)=>{ 
-            
-        };
+        })
+
+        const posts = computed(()=>{
+            return store.getters['post/getPosts'];
+        });
         const deleteOnePost = async (id:number)=>{
-            
+            console.log(`[INFO] Delete post  id : { ${id} }`);
+            store.dispatch('post/deletePost',{id});
         };
         const showForm = ()=>{
-            isShow.value=!isShow.value;
+            store.dispatch('post/setShow');
         }
 
+        const isShow = computed(()=>{
+            return store.getters['post/getShow'];
+        })
+
         return{
-            all_posts,
+            posts,
             isShow,
-            getPosts,
-            createOnePost,
             deleteOnePost,
             showForm
         }

@@ -5,10 +5,12 @@ export const  initialState = {
         title : '',
         body : '',
         userId : ''
-    }
+    },
+    show:false
 }
 
 export const state = {
     post : initialState.post,
-    posts : initialState.posts
+    posts : initialState.posts,
+    show: initialState.show
 }

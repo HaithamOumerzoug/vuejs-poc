@@ -1,11 +1,12 @@
 import Post from '@/types/models/post';
 import { ActionContext }  from "vuex";
 import PostApi from '@/api/post/post';
+import { PostSate } from '../type-defs/post-state';
 
 export const actions = {
 
     // Get all posts
-    getAllPost({ commit }:ActionContext<any,any>){
+    getAllPost({ commit }:ActionContext<PostSate,any>){
         new Promise((resolve,reject)=>{
             PostApi.getAllPosts().then(res=>{
                 const posts = res.data;
@@ -19,7 +20,7 @@ export const actions = {
     },
 
     // Get one post by id
-    getOnePost( { commit }: ActionContext<any , any> , payload:{ id :number} ){
+    getOnePost( { commit }: ActionContext<PostSate , any> , payload:{ id :number} ){
         new Promise((resolve,reject)=>{
             PostApi.getOnePost(payload.id).then(res=>{
                 const post = res.data;
@@ -32,7 +33,7 @@ export const actions = {
     },
 
     // Create post
-    createOnePost( { commit }: ActionContext<any,any> , payload:Post ){
+    createOnePost( { commit }: ActionContext<PostSate,any> , payload:Post ){
         new Promise((resolve,reject)=>{
             PostApi.createPost(payload).then(res=>{
                 const post = res.data;
@@ -45,7 +46,7 @@ export const actions = {
     },
 
     // Delete post
-    deletePost( { commit }: ActionContext<any,any> , payload:{ id: number } ){
+    deletePost( { commit }: ActionContext<PostSate,any> , payload:{ id: number } ){
         new Promise((resolve,reject)=>{
             PostApi.deletePost(payload.id).then(res=>{
                 commit('DELETE_POST',payload);
@@ -54,5 +55,9 @@ export const actions = {
                 reject(err);
             })
         });
+    },
+
+    setShow( { commit } : ActionContext<PostSate,any> ){
+        commit('SET_SHOW');
     }
 }

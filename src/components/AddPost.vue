@@ -48,7 +48,9 @@
     </form>
 </template>
 <script lang="ts">
-import { defineComponent, Ref } from 'vue';
+import { defineComponent } from 'vue';
+import { mapActions } from 'vuex';
+import Post from '@/types/models/post';
 export default defineComponent({
     data(){
         return {
@@ -58,20 +60,25 @@ export default defineComponent({
         }
     },
     methods:{
+        ...mapActions('post',['createOnePost','setShow']),
+
         createPost(){
-            console.log("[INFO] Create post ,",this.title , this.body);
-            const payload = {
-                title : this.title,
-                body  : this.body
+            const payload: Post = {
+                title:this.title,
+                body: this.body
             }
+            console.log("[INFO] Create post ,",this.title , this.body);
+
             if(payload.title === ''  || payload.body === ''){
                 this.setError('Fields required.');
                 return;
             }
-            this.$emit('createPost',payload);
+            this.createOnePost(payload);
+            this.setShow();
         },
         showForm(){
-            this.$emit("show");
+            // this.$emit("show");
+            this.setShow();
         },
         setError(msg:string){
             this.error = msg;
